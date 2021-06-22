@@ -61,9 +61,66 @@ def is_solved(board):
 
     return solved
 
-def solve(board):
-    pass
 
+def solve(board):
+    while not is_solved(board):
+        row = 0
+        column = 0
+        queue = []
+        if 0 in board[row]:
+            column = board[row].index(0)
+        else:
+            row += 1
+        possible = generate_valid_set(row, column, board)
+        iteration = iter(sorted(possible))
+        temp = next(iteration)
+        queue.append(iteration)
+        if temp == None:
+            # Figure out how to move to the next iteration
+        board[row][column] = temp
+
+
+
+# Generates valid set to use for continued solving
+def generate_valid_set(row, column, board):
+    row_set = set(board[row])
+    col_set = set()
+
+    # Generates column set
+    for col in range(len(board[row])):
+        col_set.add(board[row][col])
+    col_set.discard(0)
+
+    # Generates box set
+    box_lookup = findbox(row, column)
+    box_set = set()
+    for i in range(int(box_lookup[0]) - 3, int(box_lookup[0])):
+        for j in range(int(box_lookup[1]) - 3, int(box_lookup[1])):
+            box_set.add(board[i][j])
+    box_set.discard(0)
+
+    # Unifies all sets to generate a valid set
+    val_set = {1, 2, 3, 4, 5, 6, 7, 8, 9} - (row_set | col_set | box_set)
+    return val_set
+
+
+# Using the box_table, finds the appropriate box of the column and row specified
+def findbox(row, column):
+    ret = ''
+    if row in range(0, 3):
+        ret += '3'
+    elif row in range(3, 6):
+        ret += '6'
+    else:
+        ret += '9'
+
+    if column in range(0, 3):
+        ret += '3'
+    elif column in range(3, 6):
+        ret += '6'
+    else:
+        ret += '9'
+    return ret
 
 
 puzzle = [
