@@ -1,6 +1,9 @@
+import java.util.Scanner;
 public class SudokuSolver{
 	public static void main(String[] args) {
-		char[][] board = {	
+		char[][] board = new char[9][9]; 
+
+		/*= {	
 			{'5','2',' ',' ','7',' ','6',' ',' '},
 			{' ','7',' ','3','4',' ',' ',' ','2'},
 			{' ',' ',' ',' ',' ','1',' ','9',' '},
@@ -9,7 +12,8 @@ public class SudokuSolver{
 			{' ',' ',' ','1','8',' ','3','6','5'},
 			{' ','6',' ','8',' ',' ',' ',' ',' '},
 			{'4',' ',' ',' ','6','7',' ','8',' '},
-			{' ',' ','9',' ','5',' ',' ','7','6'}	};
+			{' ',' ','9',' ','5',' ',' ','7','6'}	}; 
+		*/
 
 		/*{	
 			{' ',' ',' ',' ',' ',' ',' ',' ','1'},
@@ -23,13 +27,40 @@ public class SudokuSolver{
 			{'5','6','8','4','7',' ',' ',' ',' '}	};
 		*/
 
+		 
+		Scanner userIn = new Scanner(System.in);
+		System.out.println("Please enter in the puzzle from left to right, top to bottom: ");
+		String boardStr = userIn.nextLine();
+
+		while(boardStr.length() != 81) {
+			System.out.println("Check again, the puzzle is the wrong length: ");
+			boardStr = userIn.nextLine();
+		}
+
+		loadBoard(boardStr, board);
+		printBoard(board);
 
 		if (solve(board)) {
-			for (int i = 0; i < 9; i++) {
-				for (int j = 0; j < 9; j++) {
-					System.out.print(board[i][j] + ", ");
-				}
-				System.out.println();
+			System.out.println("Here is the solved board: ");
+			printBoard(board);
+		}
+	}
+
+	private static void printBoard(char[][] board) {
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				System.out.print(board[i][j] + ", ");
+			}
+			System.out.println();	
+		}
+	}
+
+	private static void loadBoard(String boardStr, char[][] board) {
+		int k = 0;
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				board[i][j] = boardStr.charAt(k);
+				k++;
 			}
 		}
 	}
@@ -118,23 +149,18 @@ public class SudokuSolver{
 
 	// Checks if col is valid
 	private static boolean checkCol(char[][] board, int col) {
-		boolean ret = false;
+		boolean ret = true;
 		String temp = "";
 		// Loops through column and checks for duplicates
 		for (int i = 0; i < 9; i++) {
 			char val = board[i][col];
 			if (val == ' ') {
-				if (i == 8) {
-					ret = true;
-				}
 				continue;
 			}
 			if (temp.indexOf(val) < 0) {
 				temp += val;
-				if (i == 8) {
-					ret = true;
-				}
 			} else {
+				ret = false;
 				break;
 			}
 		}
@@ -143,30 +169,26 @@ public class SudokuSolver{
 
 	// Checks if row is valid
 	private static boolean checkRow(char[][] board, int row) {
-		boolean ret = false;
+		boolean ret = true;
 		String temp = "";
 		// Loops through column and checks for duplicates
 		for (int i = 0; i < 9; i++) {
 			char val = board[row][i];
 			if (val == ' ') {
-				if (i == 8) {
-					ret = true;
-				}
 				continue;
 			}
 			if (temp.indexOf(val) < 0) {
 				temp += val;
-				if (i == 8) {
-					ret = true;
-				}
-			} else
+			} else {
+				ret = false;
 				break;
+			}
 		}
 		return ret;
 	}
 
 	private static boolean checkBox(char[][] board, int row, int col){
-		boolean ret = false;
+		boolean ret = true;
 		String temp = "";
 		if (col > 5)
 			col = 6;
@@ -186,18 +208,14 @@ public class SudokuSolver{
 			for (int j = 0; j < 3; j++) {
 				char val = board[row+i][col+j];
 				if (val == ' ') {
-					if (i == 2 & j == 2) {
-						ret = true;
-					}
 					continue;
 				}
 				if (temp.indexOf(val) < 0) {
 					temp += val;
-					if (i == 2 & j == 2) {
-						ret = true;
-					}
-				} else
+				} else {
+					ret = false;
 					break;
+				}
 			}
 		}
 		return ret;
